@@ -1,5 +1,5 @@
 {
-  "name": "threejs_project_template",
+  "name": "theoryofvirtualandaddreality",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,15 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/WebDev-Sandbox/threejs_project_template.git"
+    "url": "git+https://github.com/mlakkerman/TheoryOfVirtualAndAddReality.git"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/WebDev-Sandbox/threejs_project_template/issues"
+    "url": "https://github.com/mlakkerman/TheoryOfVirtualAndAddReality/issues"
   },
-  "homepage": "https://github.com/WebDev-Sandbox/threejs_project_template#readme",
+  "homepage": "https://github.com/mlakkerman/TheoryOfVirtualAndAddReality/#readme",
   "devDependencies": {
     "@babel/core": "^7.22.10",
     "@babel/preset-env": "^7.22.10",
