@@ -13,7 +13,7 @@ module.exports = merge(commonConfiguration, {
         level: 'warn',
     },
     devServer: {
-        host: 'localhost',
+        host: '0.0.0.0', // Laboratory 3 - Изменено с localhost на 0.0.0.0 для подключения с телефона
         port: 3000,
         open: true,
         https: false,
