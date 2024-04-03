@@ -4,10 +4,13 @@ const MiniCSSExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 
 module.exports = {
-	entry: path.resolve(__dirname, '../src/script.js'),
+	entry: {
+		main: path.resolve(__dirname, '../src/threeScene.js'),
+		video: path.resolve(__dirname, '../src/video.js'), // добавление video.js как новой точки входа
+	},
 	output: {
 		hashFunction: 'xxhash64',
-		filename: 'bundle.[contenthash].js',
+		filename: '[name].[contenthash].js', // используйте [name] чтобы генерировать имя файла как имя точки входа
 		path: path.resolve(__dirname, '../dist'),
 	},
 	devtool: 'source-map',
