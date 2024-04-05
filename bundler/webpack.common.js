@@ -5,12 +5,12 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		main: path.resolve(__dirname, '../src/threeScene.js'),
-		video: path.resolve(__dirname, '../src/video.js'), // добавление video.js как новой точки входа
+		main: path.resolve(__dirname, '../src/renderer.js'),
+		video: path.resolve(__dirname, '../src/video.js'), // Новая точка входа
 	},
 	output: {
 		hashFunction: 'xxhash64',
-		filename: '[name].[contenthash].js', // используйте [name] чтобы генерировать имя файла как имя точки входа
+		filename: '[name].[contenthash].js', // Генерация имени файла как имя точки входа
 		path: path.resolve(__dirname, '../dist'),
 	},
 	devtool: 'source-map',

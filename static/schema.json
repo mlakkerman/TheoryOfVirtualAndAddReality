@@ -1,0 +1,244 @@
+{
+    "materials": [
+		{
+			"uuid": "textureFloor",
+			"type": "MeshStandardMaterial",
+			"map": "/textures/floor/map.jpg",
+			"aoMap": "/textures/floor/aoMap.jpg",
+			"normalMap": "/textures/floor/normalMap.jpg",
+			"roughnessMap": "/textures/floor/roughMap.jpg"
+		},
+        {
+			"uuid": "textureWall",
+			"type": "MeshStandardMaterial",
+			"map": "/textures/wall/map.jpg",
+			"aoMap": "/textures/wall/aoMap.jpg",
+			"normalMap": "/textures/wall/normalMap.jpg",
+			"roughnessMap": "/textures/wall/roughMap.jpg"
+		},
+        {
+			"uuid": "textureCeiling",
+			"type": "MeshStandardMaterial",
+			"map": "/textures/ceiling/map.jpg",
+			"aoMap": "/textures/ceiling/aoMap.jpg",
+			"normalMap": "/textures/ceiling/normalMap.jpg",
+			"roughnessMap": "/textures/ceiling/roughMap.jpg"
+		},
+        {
+			"uuid": "textureChair",
+			"type": "MeshStandardMaterial",
+			"map": "/textures/officechair/map.jpg",
+			"aoMap": "/textures/officechair/aoMap.jpg",
+			"normalMap": "/textures/officechair/normalMap.jpg",
+			"roughnessMap": "/textures/officechair/roughMap.jpg"
+		}
+        
+    ],
+    "geometries": [
+		{
+			"uuid": "floor",
+			"type": "BoxGeometry",
+			"width": 1,
+			"height": 0.26,
+			"depth": 1
+		},
+		{
+			"uuid": "other",
+			"type": "BoxGeometry",
+			"width": 1,
+			"height": 1,
+			"depth": 1
+		},
+        {
+			"uuid": "chair",
+			"type": "BufferGeometry",
+			"data": {
+				"attributes": {
+					"position": {
+						"itemSize": 3,
+						"type": "Float32Array",
+						"array": [181.5821075439453],
+                        "normalized": false
+                    },
+                    "normal": {
+						"itemSize": 3,
+						"type": "Float32Array",
+						"array": [181.5821075439453],
+                        "normalized": false
+                    },
+                    "uv": {
+						"itemSize": 3,
+						"type": "Float32Array",
+						"array": [181.5821075439453],
+                        "normalized": false
+                    }
+                }
+            }
+        }
+    ],
+    "object": {
+        "uuid": "Scene",
+        "type": "Scene",
+        "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+        "background": 0,
+        "children": [
+        {
+            "uuid": "floor",
+            "type": "Mesh",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [6,0,0,0,0,0.12,0,0,0,0,12,0,-0.04870270853331506,0.05602803713668286,0.0336182910600933,1],
+            "geometry": "floor",
+            "material": "textureFloor"
+        },
+        {
+            "uuid": "wall1",
+            "type": "Mesh",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [0.02,0,0,0,0,4,0,0,0,0,12,0,3,2,0,1],
+            "geometry": "other",
+            "material": "textureWall"
+        },
+        {
+            "uuid": "wall2",
+            "type": "Mesh",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [6,0,0,0,0,4,0,0,0,0,0.02,0,0,2,6,1],
+            "geometry": "other",
+            "material": "textureWall"
+        },
+        {
+            "uuid": "wall3",
+            "type": "Mesh",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [0.02,0,0,0,0,4,0,0,0,0,12,0,-3,2,0,1],
+            "geometry": "other",
+            "material": "textureWall"
+        },
+        {
+            "uuid": "wall4",
+            "type": "Mesh",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [6,0,0,0,0,4,0,0,0,0,0.02,0,0,2,-6,1],
+            "geometry": "other",
+            "material": "textureWall"
+        },
+        {
+            "uuid": "ceiling",
+            "type": "Mesh",
+            "name": "Box",
+            "castShadow": true,
+            "receiveShadow": true,
+            "matrix": [6,0,0,0,0,0.2,0,0,0,0,12,0,0,4,0,1],
+            "geometry": "other",
+            "material": "textureCeiling"
+        },
+        {
+            "uuid": "AL",
+            "type": "AmbientLight",
+            "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+            "color": 2236962,
+            "intensity": 4
+        },
+        {
+            "uuid": "7f7f2dfc-2141-40b5-83cb-6a7919261b11",
+            "type": "PointLight",
+            "name": "PointLight",
+            "castShadow": true,
+            "layers": 1,
+            "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0.000023720746013436433,3.5045662005959364,0,1],
+            "up": [0,1,0],
+            "color": 16777215,
+            "intensity": 5,
+            "distance": 100,
+            "decay": 0.82,
+            "shadow": {
+                "radius": 7.7,
+                "camera": {
+                    "uuid": "1b593a35-9b63-4f31-b223-cf706206a3f3",
+                    "type": "PerspectiveCamera",
+                    "layers": 1,
+                    "up": [0,0,-1],
+                    "fov": 90,
+                    "zoom": 1,
+                    "near": 0.5,
+                    "far": 100,
+                    "focus": 10,
+                    "aspect": 1,
+                    "filmGauge": 35,
+                    "filmOffset": 0
+                }
+            }
+        },
+        {
+            "uuid": "efce4d01-437f-4d84-8085-301b78dce635",
+            "type": "DirectionalLight",
+            "name": "DirectionalLight",
+            "castShadow": true,
+            "layers": 1,
+            "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,7.268402592154088,10.486688720232978,7.1495455496927445,1],
+            "up": [0,1,0],
+            "color": 16777215,
+            "intensity": 1,
+            "shadow": {
+                "camera": {
+                    "uuid": "aa9c045d-f803-44d0-a803-a03e28f2ba67",
+                    "type": "OrthographicCamera",
+                    "layers": 1,
+                    "up": [0,1,0],
+                    "zoom": 1,
+                    "left": -5,
+                    "right": 5,
+                    "top": 5,
+                    "bottom": -5,
+                    "near": 0.5,
+                    "far": 500
+                }
+            }
+        },
+        {
+            "uuid": "chairGroup",
+            "type": "Group",
+            "matrix": [0.014142135623730949,0,-0.014142135623730952,0,0,0.02,0,0,0.014142135623730952,0,0.014142135623730949,0,-3.5,0,-1.6,1],
+            "children": [
+                {
+                    "uuid": "Chair",
+                    "type": "Mesh",
+                    "matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+                    "geometry": "chair",
+                    "material": "textureChair"
+                }]
+        },
+        {
+            "uuid": "02f3e3b0-14d4-4df4-9596-69c02e5743c4",
+		    "type": "PerspectiveCamera",
+		    "matrix": [0.8549038381428321,0,0.5187864951294082,0,0.20445125276115414,0.919069635998102,-0.3369134746944822,0,-0.47680091523931667,0.394095171483127,0.7857161593353137,0,-12.516723341270376,10.345576264485436,20.626201579813323,1],
+		    "fov": 50,
+		    "zoom": 1,
+		    "near": 0.01,
+		    "far": 1000,
+		    "focus": 10,
+		    "aspect": 1.842605156037992,
+		    "filmGauge": 35,
+		    "filmOffset": 0
+        }
+    ]
+},
+"objectCamera": {
+    "uuid": "02f3e3b0-14d4-4df4-9596-69c02e5743c4",
+    "type": "PerspectiveCamera",
+    "matrix": [0.8549038381428321,0,0.5187864951294082,0,0.20445125276115414,0.919069635998102,-0.3369134746944822,0,-0.47680091523931667,0.394095171483127,0.7857161593353137,0,-12.516723341270376,10.345576264485436,20.626201579813323,1],
+    "fov": 50,
+    "zoom": 1,
+    "near": 0.01,
+    "far": 1000,
+    "focus": 10,
+    "aspect": 1.842605156037992,
+    "filmGauge": 35,
+    "filmOffset": 0
+    }
+}

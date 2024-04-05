@@ -1,7 +1,6 @@
 import './style.css';
 import Hammer from 'hammerjs';
-import * as THREE from 'three';
-import init from './init';
+import init from './threeScene';
 
 const { sizes, camera, scene, canvas, controls, renderer } = init();
 
