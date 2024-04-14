@@ -3,34 +3,34 @@
 		{
 			"uuid": "textureFloor",
 			"type": "MeshStandardMaterial",
-			"map": "/textures/floor/map.jpg",
-			"aoMap": "/textures/floor/aoMap.jpg",
-			"normalMap": "/textures/floor/normalMap.jpg",
-			"roughnessMap": "/textures/floor/roughMap.jpg"
+			"map": "/static/textures/floor/map.jpg",
+			"aoMap": "/static/textures/floor/aoMap.jpg",
+			"normalMap": "/static/textures/floor/normalMap.jpg",
+			"roughnessMap": "/static/textures/floor/roughMap.jpg"
 		},
         {
 			"uuid": "textureWall",
 			"type": "MeshStandardMaterial",
-			"map": "/textures/wall/map.jpg",
-			"aoMap": "/textures/wall/aoMap.jpg",
-			"normalMap": "/textures/wall/normalMap.jpg",
-			"roughnessMap": "/textures/wall/roughMap.jpg"
+			"map": "/static/textures/wall/map.jpg",
+			"aoMap": "/static/textures/wall/aoMap.jpg",
+			"normalMap": "/static/textures/wall/normalMap.jpg",
+			"roughnessMap": "/static/textures/wall/roughMap.jpg"
 		},
         {
 			"uuid": "textureCeiling",
 			"type": "MeshStandardMaterial",
-			"map": "/textures/ceiling/map.jpg",
-			"aoMap": "/textures/ceiling/aoMap.jpg",
-			"normalMap": "/textures/ceiling/normalMap.jpg",
-			"roughnessMap": "/textures/ceiling/roughMap.jpg"
+			"map": "/static/textures/ceiling/map.jpg",
+			"aoMap": "/static/textures/ceiling/aoMap.jpg",
+			"normalMap": "/static/textures/ceiling/normalMap.jpg",
+			"roughnessMap": "/static/textures/ceiling/roughMap.jpg"
 		},
         {
 			"uuid": "textureChair",
 			"type": "MeshStandardMaterial",
-			"map": "/textures/officechair/map.jpg",
-			"aoMap": "/textures/officechair/aoMap.jpg",
-			"normalMap": "/textures/officechair/normalMap.jpg",
-			"roughnessMap": "/textures/officechair/roughMap.jpg"
+			"map": "/static/textures/officechair/map.jpg",
+			"aoMap": "/static/textures/officechair/aoMap.jpg",
+			"normalMap": "/static/textures/officechair/normalMap.jpg",
+			"roughnessMap": "/static/textures/officechair/roughMap.jpg"
 		}
         
     ],

@@ -1,8 +1,96 @@
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import schemaJSON from '/static/schema.json';
+import * as THREE from 'three'
+import { OrbitControls } from 'three/controls/OrbitControls.js';
 
-const threeScene = () => {
+const tf = window.tf;
+const handpose = window.handpose;
+
+let model = null;
+
+window.onload = () => {
+	const video = document.getElementById("video");
+	navigator.mediaDevices.getUserMedia({ video: true })
+		.then(stream => {
+			video.srcObject = stream;
+		})
+		.catch(e => console.error('Не удалось инициализировать камеру:', e));
+
+	handpose.load()
+		.then(_model => {
+			console.log("Handpose model loaded");
+			model = _model;
+			tick();
+		})
+		.catch(e => console.error('Не удалось загрузить модель Handpose:', e));
+}
+
+async function loadJSON(jsonPath) {
+	try {
+		const response = await fetch(jsonPath);
+		if (!response.ok) {
+			throw new Error('Network response was not ok ' + response.statusText);
+		}
+		return response.json();
+	} catch (error) {
+		console.error('Ошибка при загрузке JSON:', error);
+	}
+}
+
+let schemaJSON = await loadJSON('/src/schema.json');
+console.log(schemaJSON);
+
+let isSpinning = false;
+let counter = 0;
+
+const processVideo = async () => {
+	try {
+		if (!model) return;
+		const predictions = await model.estimateHands(video);
+
+		if (predictions.length > 0) {
+			let prediction = predictions[0];
+			if (prediction.annotations.thumb[3][1] < prediction.annotations.thumb[0][1] &&
+				prediction.annotations.indexFinger[3][1] < prediction.annotations.indexFinger[0][1] &&
+				prediction.annotations.middleFinger[3][1] < prediction.annotations.middleFinger[0][1] &&
+				prediction.annotations.ringFinger[3][1] < prediction.annotations.ringFinger[0][1] &&
+				prediction.annotations.pinky[3][1] < prediction.annotations.pinky[0][1]) {
+				counter++;
+				if (counter > 3) {
+					isSpinning = true;
+					counter = 0;
+				}
+				return;
+			}
+			// ГУЛАГ
+			// if (prediction.annotations.thumb[3][0] < prediction.annotations.indexFinger[0][0]) {
+			// 	counter++;
+			// 	if (counter > 3) {
+			// 		isSpinning = false;
+			// 		counter = 0;
+			// 	}
+			// 	return;
+			// }
+			// указательный палец
+			if (prediction.annotations.thumb[3][1] > prediction.annotations.indexFinger[3][1] &&
+				prediction.annotations.middleFinger[3][1] > prediction.annotations.indexFinger[3][1] &&
+				prediction.annotations.ringFinger[3][1] > prediction.annotations.indexFinger[3][1] && 
+				prediction.annotations.pinky[3][1] > prediction.annotations.indexFinger[3][1]) {
+			  counter++;
+			  if (counter > 3) {
+				isSpinning = false;
+				counter = 0;
+			  }
+			  return;
+			}
+		}
+		counter = 0;
+		window.requestAnimationFrame(processVideo);
+	} catch (e) {
+		console.error(e);
+	}
+}
+
+
+const threeScene = (schemaJSON) => {
 	function createPerspectiveCamera(schemaJSON) {
 		const camera = new THREE.PerspectiveCamera(
 			schemaJSON.objectCamera.fov,
@@ -71,7 +159,7 @@ const threeScene = () => {
 				const matrix = new THREE.Matrix4();
 				matrix.fromArray(child.matrix);
 				pointLight.matrix = matrix;
-				pointLight.matrixAutoUpdate = false; 
+				pointLight.matrixAutoUpdate = false;
 				pointLight.shadow.radius = child.shadow.radius;
 				const camData = child.shadow.camera;
 				pointLight.shadow.camera = new THREE.PerspectiveCamera(camData.fov, camData.aspect, camData.near, camData.far);
@@ -89,7 +177,7 @@ const threeScene = () => {
 				directionalLight.matrixAutoUpdate = false;
 				const shadowCamData = child.shadow.camera;
 				const shadowCamera = new THREE.OrthographicCamera(shadowCamData.left, shadowCamData.right, shadowCamData.top, shadowCamData.bottom, shadowCamData.near, shadowCamData.far);
-				shadowCamera.up.set(...shadowCamData.up); 
+				shadowCamera.up.set(...shadowCamData.up);
 				shadowCamera.updateProjectionMatrix();
 				directionalLight.shadow.camera = shadowCamera;
 				existingScene.add(directionalLight);
@@ -124,4 +212,37 @@ const threeScene = () => {
 	return { sizes, scene, canvas, camera, renderer, controls };
 };
 
-export default threeScene;
+const { sizes, scene, canvas, camera, renderer, controls } = threeScene(schemaJSON)
+const tick = () => {
+	if (isSpinning) {
+		scene.rotation.y += Math.PI / 4;
+		scene.rotation.x += Math.PI / 4;
+	}
+	console.log(isSpinning);
+	processVideo();
+	controls.update();
+	renderer.render(scene, camera);
+	window.requestAnimationFrame(tick);
+};
+tick();
+
+window.addEventListener('resize', () => {
+	// Обновляем размеры
+	sizes.width = window.innerWidth;
+	sizes.height = window.innerHeight;
+	// Обновляем соотношение сторон камеры
+	camera.aspect = sizes.width / sizes.height;
+	camera.updateProjectionMatrix();
+	// Обновляем renderer
+	renderer.setSize(sizes.width, sizes.height);
+	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+	renderer.render(scene, camera);
+});
+
+window.addEventListener('dblclick', () => {
+	if (!document.fullscreenElement) {
+		canvas.requestFullscreen();
+	} else {
+		document.exitFullscreen();
+	}
+});
