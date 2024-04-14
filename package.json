@@ -46,7 +46,11 @@
     "webpack-merge": "^5.9.0"
   },
   "dependencies": {
-    "three": "^0.155.0",
-    "gsap": "^3.12.2"
+    "@mediapipe/hands": "^0.4.1675469240",
+    "@tensorflow-models/hand-pose-detection": "^2.0.1",
+    "gsap": "^3.12.2",
+    "leapjs": "^1.1.1",
+    "path-browserify": "^1.0.1",
+    "three": "^0.155.0"
   }
 }
