@@ -17,13 +17,14 @@
       </script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/handpose"></script>
-    <!-- <script src="https://unpkg.com/html5-qrcode"></script> -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 
 <body>
     <script type="module" src="./threeScene.js"></script>
-    <video id="video" class="video" autoplay muted playsinline></video> <!--LR3-->
-    <!--<div id="reader" class="reader"></div>-->
+    <canvas id="imageCanvas" class="image-canvas"></canvas>
+    <video id="video" class="video" autoplay muted playsinline></video>
+    <div id="reader" class="reader"></div>
     <canvas class="canvas"></canvas>
 </body>
 

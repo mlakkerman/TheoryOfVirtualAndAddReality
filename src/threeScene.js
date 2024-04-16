@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/controls/OrbitControls.js';
 
-const tf = window.tf;
 const handpose = window.handpose;
 
 let model = null;
@@ -22,21 +21,28 @@ window.onload = () => {
 		})
 		.catch(e => console.error('Не удалось загрузить модель Handpose:', e));
 
-	// 	const qrCodeReader = new Html5Qrcode("reader");
+	const qrCodeReader = new Html5Qrcode("reader");
 
-	// 	qrCodeReader.start(
-	// 		{ facingMode: "environment" },
-	// 		{
-	// 			fps: 10,
-	// 			qrbox: { width: 250, height: 250 },
-	// 		},
-	// 		qrCodeMessage => {
-	// 			console.log("QR Code detected: " + qrCodeMessage);
-	// 		},
-	// 		errorMessage => {
-	// 			console.error(errorMessage);
-	// 		});
-	// 	document.getElementById("reader").style.position = "fixed";
+	qrCodeReader.start(
+		{ facingMode: "environment" },
+		{
+			fps: 10,
+			aspectRatio: 1,
+			qrbox: { width: 250, height: 250 },
+		},
+		qrCodeMessage => {
+			console.log("QR Code detected: " + qrCodeMessage);
+			let image = new Image();
+			image.src = qrCodeMessage;
+
+			image.onload = function () {
+				let canvas = document.getElementById('imageCanvas');
+				let ctx = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+			}
+		},
+		);
+	document.getElementById("reader").style.position = "fixed";
 }
 
 async function loadJSON(jsonPath) {
@@ -58,9 +64,9 @@ console.log(schemaJSON);
 let isSpinning = false;
 let counter = 0;
 let prevDistance = null;
-let scale = 1; 
+let scale = 1;
 const calculateDistance = (pointA, pointB) => {
-  return Math.sqrt(Math.pow(pointA[0] - pointB[0], 2) + Math.pow(pointA[1] - pointB[1], 2));
+	return Math.sqrt(Math.pow(pointA[0] - pointB[0], 2) + Math.pow(pointA[1] - pointB[1], 2));
 };
 
 
@@ -114,14 +120,14 @@ const processVideo = async () => {
 			prediction.annotations.thumb[3],
 			prediction.annotations.indexFinger[3]
 		);
-	
+
 		if (prevDistance != null) {
-		  if (currentDistance > prevDistance) {
-			scale *= 0.9*(currentDistance / prevDistance);
-		  }
-		  
 		  if (currentDistance < prevDistance) {
-			scale *= 1.1*(prevDistance / currentDistance);
+			scale *= 0.95;
+		  }
+
+		  if (currentDistance > prevDistance) {
+			scale *= 1.05;
 		  }
 		}
 		scene.scale.set(scale, scale, scale);
@@ -281,13 +287,10 @@ const tick = () => {
 tick();
 
 window.addEventListener('resize', () => {
-	// Обновляем размеры
 	sizes.width = window.innerWidth;
 	sizes.height = window.innerHeight;
-	// Обновляем соотношение сторон камеры
 	camera.aspect = sizes.width / sizes.height;
 	camera.updateProjectionMatrix();
-	// Обновляем renderer
 	renderer.setSize(sizes.width, sizes.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 	renderer.render(scene, camera);

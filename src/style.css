@@ -10,14 +10,15 @@ body {
 
 .canvas {
     position: fixed;
-    top: 50%; 
-    left: 40%; 
-    transform: translate(-50%, -50%); 
+    top: 50%;
+    left: 40%;
+    transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
     outline: none;
     z-index: 2;
 }
+
 
 .video {
     position: fixed;
@@ -25,19 +26,39 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-    object-fit: cover; /* Это свойство гарантирует, что видео покроет весь элемент, сохраняя пропорции */
+    /* z-index: 1; */
+    object-fit: cover;
+    display: none;
 }
 
-#reader{
+.image-canvas {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#reader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: fixed;
-    top: 50%; 
+    top: 50%;
     left: 70%;
-    transform: translate(-50%, -50%); 
-    border: 2px solid red; 
-    z-index: 100; 
-    border-radius: 10px; 
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.5); 
-    width: 300px;
-    height: 300px;
+    transform: translate(-50%, -50%);
+    border: 2px solid red;
+    z-index: 100;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    width: 250px;
+    height: 250px;
+}
+
+#reader video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
