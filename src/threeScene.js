@@ -1,7 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/controls/OrbitControls.js';
 
-const tf = window.tf;
 const handpose = window.handpose;
 
 let model = null;
@@ -21,6 +20,29 @@ window.onload = () => {
 			tick();
 		})
 		.catch(e => console.error('Не удалось загрузить модель Handpose:', e));
+
+	const qrCodeReader = new Html5Qrcode("reader");
+
+	qrCodeReader.start(
+		{ facingMode: "environment" },
+		{
+			fps: 10,
+			aspectRatio: 1,
+			qrbox: { width: 250, height: 250 },
+		},
+		qrCodeMessage => {
+			console.log("QR Code detected: " + qrCodeMessage);
+			let image = new Image();
+			image.src = qrCodeMessage;
+
+			image.onload = function () {
+				let canvas = document.getElementById('imageCanvas');
+				let ctx = canvas.getContext('2d');
+				ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+			}
+		},
+		);
+	document.getElementById("reader").style.position = "fixed";
 }
 
 async function loadJSON(jsonPath) {
@@ -38,16 +60,25 @@ async function loadJSON(jsonPath) {
 let schemaJSON = await loadJSON('/src/schema.json');
 console.log(schemaJSON);
 
+// let fingersFlipPreviously = false;
 let isSpinning = false;
 let counter = 0;
+let prevDistance = null;
+let scale = 1;
+const calculateDistance = (pointA, pointB) => {
+	return Math.sqrt(Math.pow(pointA[0] - pointB[0], 2) + Math.pow(pointA[1] - pointB[1], 2));
+};
+
 
 const processVideo = async () => {
 	try {
-		if (!model) return;
+		if (!model || !camera || !scene) return;
 		const predictions = await model.estimateHands(video);
-
+		// отрисовка скелета рук
 		if (predictions.length > 0) {
 			let prediction = predictions[0];
+
+			// Подняты все пальцы ладони, вращение сцены
 			if (prediction.annotations.thumb[3][1] < prediction.annotations.thumb[0][1] &&
 				prediction.annotations.indexFinger[3][1] < prediction.annotations.indexFinger[0][1] &&
 				prediction.annotations.middleFinger[3][1] < prediction.annotations.middleFinger[0][1] &&
@@ -60,27 +91,47 @@ const processVideo = async () => {
 				}
 				return;
 			}
-			// ГУЛАГ
-			// if (prediction.annotations.thumb[3][0] < prediction.annotations.indexFinger[0][0]) {
-			// 	counter++;
-			// 	if (counter > 3) {
-			// 		isSpinning = false;
-			// 		counter = 0;
-			// 	}
-			// 	return;
-			// }
-			// указательный палец
-			if (prediction.annotations.thumb[3][1] > prediction.annotations.indexFinger[3][1] &&
-				prediction.annotations.middleFinger[3][1] > prediction.annotations.indexFinger[3][1] &&
-				prediction.annotations.ringFinger[3][1] > prediction.annotations.indexFinger[3][1] && 
-				prediction.annotations.pinky[3][1] > prediction.annotations.indexFinger[3][1]) {
-			  counter++;
-			  if (counter > 3) {
-				isSpinning = false;
-				counter = 0;
-			  }
-			  return;
+			// Поднят мезинец - остановка вращения сцены
+			if (prediction.annotations.thumb[3][1] > prediction.annotations.pinky[3][1] &&
+				prediction.annotations.indexFinger[3][1] > prediction.annotations.pinky[3][1] &&
+				prediction.annotations.middleFinger[3][1] > prediction.annotations.pinky[3][1] &&
+				prediction.annotations.ringFinger[3][1] > prediction.annotations.pinky[3][1]) {
+				counter++;
+				if (counter > 3) {
+					isSpinning = false;
+					counter = 0;
+				}
+				return;
 			}
+			// Указательный палец сгибаем и разгибаем - масштаб
+		// 	const fingerPointedDown = (prediction.annotations.indexFinger[3][1] < prediction.annotations.thumb[0][1]);
+		// 	if (fingerPointedDown !== fingersFlipPreviously) {
+		// 		if (fingerPointedDown) {
+		// 			scale *= 0.9;
+		// 		} else {
+		// 			scale *= 1.1;
+		// 		}
+		// 		fingersFlipPreviously = fingerPointedDown;
+		// 	}
+
+		// 	scene.scale.set(scale, scale, scale);
+		// масштаб - удаление указательного от большого пальца
+		const currentDistance = calculateDistance(
+			prediction.annotations.thumb[3],
+			prediction.annotations.indexFinger[3]
+		);
+
+		if (prevDistance != null) {
+		  if (currentDistance < prevDistance) {
+			scale *= 0.95;
+		  }
+
+		  if (currentDistance > prevDistance) {
+			scale *= 1.05;
+		  }
+		}
+		scene.scale.set(scale, scale, scale);
+		prevDistance = currentDistance;
 		}
 		counter = 0;
 		window.requestAnimationFrame(processVideo);
@@ -120,6 +171,7 @@ const threeScene = (schemaJSON) => {
 		const geometries = {};
 
 		schemaJSON.materials.forEach((material) => {
+
 			const textures = {
 				map: loader.load(material.map),
 				aoMap: loader.load(material.aoMap),
@@ -132,10 +184,17 @@ const threeScene = (schemaJSON) => {
 		schemaJSON.geometries.forEach((geo) => {
 			if (geo.type === 'BoxGeometry') {
 				geometries[geo.uuid] = new THREE.BoxGeometry(geo.width, geo.height, geo.depth);
-				// } else if (geo.type === 'BufferGeometry') {
-				// 	const bufferGeometry = new THREE.BufferGeometry();
-				// 	bufferGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(geo.data.attributes.position.array), geo.data.attributes.position.itemSize));
-				// 	geometries[geo.uuid] = bufferGeometry;
+			}
+			else if (geo.type === 'BufferGeometry') {
+				const bufferGeometry = new THREE.BufferGeometry();
+				bufferGeometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(geo.data.attributes.position.array), geo.data.attributes.position.itemSize));
+				if (geo.data.attributes.normal) {
+					bufferGeometry.setAttribute('normal', new THREE.Float32BufferAttribute(new Float32Array(geo.data.attributes.normal.array), geo.data.attributes.normal.itemSize));
+				}
+				if (geo.data.attributes.uv) {
+					bufferGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(new Float32Array(geo.data.attributes.uv.array), geo.data.attributes.uv.itemSize));
+				}
+				geometries[geo.uuid] = bufferGeometry;
 			}
 		});
 
@@ -196,7 +255,6 @@ const threeScene = (schemaJSON) => {
 				existingScene.add(group);
 			}
 		});
-
 	}
 	createSceneFromJSON(schemaJSON, scene);
 
@@ -219,7 +277,9 @@ const tick = () => {
 		scene.rotation.x += Math.PI / 4;
 	}
 	console.log(isSpinning);
-	processVideo();
+	if (camera && scene) {
+		processVideo();
+	}
 	controls.update();
 	renderer.render(scene, camera);
 	window.requestAnimationFrame(tick);
@@ -227,13 +287,10 @@ const tick = () => {
 tick();
 
 window.addEventListener('resize', () => {
-	// Обновляем размеры
 	sizes.width = window.innerWidth;
 	sizes.height = window.innerHeight;
-	// Обновляем соотношение сторон камеры
 	camera.aspect = sizes.width / sizes.height;
 	camera.updateProjectionMatrix();
-	// Обновляем renderer
 	renderer.setSize(sizes.width, sizes.height);
 	renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 	renderer.render(scene, camera);
