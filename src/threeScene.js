@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/controls/OrbitControls.js';
 
 const handpose = window.handpose;
-
 let model = null;
 
 window.onload = () => {
@@ -60,7 +59,6 @@ async function loadJSON(jsonPath) {
 let schemaJSON = await loadJSON('/src/schema.json');
 console.log(schemaJSON);
 
-// let fingersFlipPreviously = false;
 let isSpinning = false;
 let counter = 0;
 let prevDistance = null;
@@ -74,7 +72,6 @@ const processVideo = async () => {
 	try {
 		if (!model || !camera || !scene) return;
 		const predictions = await model.estimateHands(video);
-		// отрисовка скелета рук
 		if (predictions.length > 0) {
 			let prediction = predictions[0];
 
@@ -103,18 +100,7 @@ const processVideo = async () => {
 				}
 				return;
 			}
-			// Указательный палец сгибаем и разгибаем - масштаб
-		// 	const fingerPointedDown = (prediction.annotations.indexFinger[3][1] < prediction.annotations.thumb[0][1]);
-		// 	if (fingerPointedDown !== fingersFlipPreviously) {
-		// 		if (fingerPointedDown) {
-		// 			scale *= 0.9;
-		// 		} else {
-		// 			scale *= 1.1;
-		// 		}
-		// 		fingersFlipPreviously = fingerPointedDown;
-		// 	}
 
-		// 	scene.scale.set(scale, scale, scale);
 		// масштаб - удаление указательного от большого пальца
 		const currentDistance = calculateDistance(
 			prediction.annotations.thumb[3],
