@@ -24,11 +24,9 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    /* z-index: 1; */
-    object-fit: cover;
-    display: none;
+    width: 0%;
+    height: 0%;
+    z-index: -10;
 }
 
 .image-canvas {
